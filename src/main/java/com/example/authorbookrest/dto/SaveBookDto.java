@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SaveBookDto {
 
-    private int id;
 
     private String description;
 

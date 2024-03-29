@@ -9,18 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookResponseDto {
-
-    private int id;
-
-    private String description;
-
-    private double price;
-
-    private double priceUSD;
-
+public class BookFilterDto {
     private String title;
-
-    private AuthorResponseDto authorResponseDto;
+    private String description;
+    private Double minPrice;
+    private Double maxPrice;
 
 }

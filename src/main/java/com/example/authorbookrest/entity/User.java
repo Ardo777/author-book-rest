@@ -25,6 +25,8 @@ public class User {
 
     private String email;
 
+    private String imagePath;
+
     @Enumerated(EnumType.STRING)
     private UserType userType;
 

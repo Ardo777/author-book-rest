@@ -20,7 +20,7 @@ public class SaveUserDto {
 
     private UserType userType;
 
-
+    private String imagePath;
 
 
 }

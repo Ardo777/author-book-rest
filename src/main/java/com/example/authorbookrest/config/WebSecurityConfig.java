@@ -21,40 +21,40 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
     @RequiredArgsConstructor
     public class WebSecurityConfig {
 
-        private final PasswordEncoder passwordEncoder;
-        private final UserDetailsService userDetailsService;
-        private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-        private final JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JWTAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeHttpRequests()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/v1/users").permitAll()
+                .requestMatchers(HttpMethod.POST,"/v1/users/image/**").permitAll()
+                .requestMatchers("/v1/users/getImage/**").permitAll()
+                .requestMatchers("/v1/users/auth").permitAll()
+                .requestMatchers("/v1/books/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/authors").hasAuthority(UserType.ADMIN.name())
+                .anyRequest().authenticated();
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-            httpSecurity.csrf().disable()
-                    .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
-                    .and()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .authorizeHttpRequests()
-//                    .requestMatchers("/swagger-ui/**").permitAll()
-//                    .requestMatchers("/v3/api-docs/**").permitAll()
-//                    .requestMatchers(HttpMethod.POST,"/v1/users/image/**").permitAll()
-//                    .requestMatchers("/v1/users/getImage/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/v1/authors").hasAuthority(UserType.ADMIN.name())
-                    .requestMatchers("/v1/users").permitAll()
-                    .requestMatchers("/v1/users/auth").permitAll()
-                    .anyRequest().authenticated();
-
-            httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-            return httpSecurity.build();
-        }
-
-        @Bean
-        public AuthenticationProvider authenticationProvider() {
-            DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-            authenticationProvider.setUserDetailsService(userDetailsService);
-            authenticationProvider.setPasswordEncoder(passwordEncoder);
-            return authenticationProvider;
-        }
-
-
+        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        return httpSecurity.build();
     }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return authenticationProvider;
+    }
+
+
+}
 
